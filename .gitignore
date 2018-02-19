@@ -1,3 +1,4 @@
 .stack-work/
 hello-world.cabal
 *~
+bin/hello-world-exe
