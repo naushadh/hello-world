@@ -1,4 +1,4 @@
-name:                hello-world
+name:                hello-postgresql
 version:             0.1.0.0
 github:              "naushadh/hello-world"
 license:             BSD3
@@ -20,12 +20,13 @@ description:         Please see the README on Github at <https://github.com/naus
 
 dependencies:
 - base >= 4.7 && < 5
+- postgresql-simple
 
 library:
   source-dirs: src
 
 executables:
-  hello-world-exe:
+  hello-postgresql-exe:
     main:                Main.hs
     source-dirs:         app
     ghc-options:
@@ -33,10 +34,10 @@ executables:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - hello-world
+    - hello-postgresql
 
 tests:
-  hello-world-test:
+  hello-postgresql-test:
     main:                Spec.hs
     source-dirs:         test
     ghc-options:
@@ -44,4 +45,4 @@ tests:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - hello-world
+    - hello-postgresql

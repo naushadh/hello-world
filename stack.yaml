@@ -1,10 +1,9 @@
 resolver: lts-9.21
 
 packages:
-- .
+- ./hello-world
+- ./hello-postgresql
 
 docker:
   enabled: true
   image: "builder:latest"
-
-local-bin-path: bin

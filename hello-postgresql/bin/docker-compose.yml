@@ -1,0 +1,20 @@
+version: '3'
+services:
+  db:
+    image: postgres:alpine
+    restart: always
+    hostname: $APP_DB_HOST
+    environment:
+      POSTGRES_DB: $APP_DB_NAME
+      POSTGRES_USER: $APP_DB_USER
+      POSTGRES_PASSWORD: $APP_DB_PASS
+
+  exe:
+    build: .
+    depends_on:
+      - db
+    environment:
+      APP_DB_HOST: $APP_DB_HOST
+      APP_DB_NAME: $APP_DB_NAME
+      APP_DB_USER: $APP_DB_USER
+      APP_DB_PASS: $APP_DB_PASS

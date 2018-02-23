@@ -40,37 +40,57 @@ Haskell applications are best compiled/built on the same architecture/OS as the 
   an image called `builder:latest` should be ready for use with `stack`
   ```
 
-- Build with app
+- Build app: `$app` here is either `hello-world` or `hello-postgresql`
   ```bash
-  $ stack build --pedantic
+  $ stack build $app --pedantic
   should build app(s) from within an ephemeral container based on the `builder:latest` image
   ```
 
-- Install app(s)
+- Install app
   ```bash
-  $ stack install
-  should move binaries into `./bin`
+  $ stack install $app --local-bin-path $app/bin/
+  should move binaries into `$app/bin`
   ```
 
 - Build app image
   ```bash
-  $ pushd bin
-  $ docker build --tag hello-world-exe:latest .
+  $ pushd $app/bin
+  $ docker build --tag $app-exe:latest .
   $ popd
   build an image with binary produced by stack
   ```
 
-- Run app(s) within container
+- Run `hello-world` within container
   ```bash
-  $ docker run hello-world-exe:latest
+  $ docker run $app-exe:latest
   someFunc
   ```
 
-- Marvel at how compact our whole app image is
+- Run `hello-postgresql` within container
+  ```bash
+  $ pushd hello-postgresql/bin
+  $ docker-compose up --build
+  Successfully built e6e8f4785d37
+  Successfully tagged bin_exe:latest
+  Starting bin_db_1 ... done
+  Starting bin_exe_1 ... done
+  Attaching to bin_db_1, bin_exe_1
+  db_1   | 2018-02-23 00:31:04.742 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+  db_1   | 2018-02-23 00:31:04.742 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+  db_1   | 2018-02-23 00:31:04.746 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+  db_1   | 2018-02-23 00:31:04.761 UTC [17] LOG:  database system was shut down at 2018-02-23 00:27:02 UTC
+  db_1   | 2018-02-23 00:31:04.764 UTC [1] LOG:  database system is ready to accept connections
+  exe_1  | dbFour
+  exe_1  | 4
+  bin_exe_1 exited with code 0
+  ```
+
+- Marvel at how compact app images are
   ```bash
   $ docker images
-  REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
-  hello-world-exe     latest              113453229af9        37 minutes ago      8.13M
+  REPOSITORY             TAG                 IMAGE ID            CREATED              SIZE
+  hello-postgresql-exe   latest              ff3f59f1c293        About a minute ago   22.7MB
+  hello-world-exe        latest              c979ce51a458        4 minutes ago        8.13MB
   ```
 
 ### Caveats
