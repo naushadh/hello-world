@@ -104,4 +104,4 @@ Haskell applications are best compiled/built on the same architecture/OS as the 
 ### References/Inspirations
 
 - [jkachmar's GIST](https://gist.github.com/jkachmar/4828bfe0f585bec93878ea893c3373ee)
-- [Mark Bucciarelli's blob post](http://markbucciarelli.com/posts/2017-04-05_haskell_on_alpine_linux.html)
+- [Mark Bucciarelli's blog post](http://markbucciarelli.com/posts/2017-04-05_haskell_on_alpine_linux.html)
