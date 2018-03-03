@@ -45,7 +45,7 @@ fpco/stack-build   |   latest        |     143c6892a663   |    12 days ago   |  
 debian             |   latest        |     1b3ec9d977fb   |    2 weeks ago   |     100MB
 alpine             |   latest        |     3fd9065eaf02   |    7 weeks ago   |     4.15MB
 
-Although Alpine would make the most sense with 1:1 build and target env. GHC 8.2+ support isn't available yet. But apparently there is some compatibility for debian built binaries to be run on alpine. So we can exploit the best of both worlds: debian for first class GHC support, and alpine for first class container runtime.
+Although Alpine would make the most sense with 1:1 build and target env. [GHC 8.2+ support isn't available yet](https://github.com/alpinelinux/aports/pull/2042). But apparently there is some compatibility for debian built binaries to be run on alpine. So we can exploit the best of both worlds: debian for first class GHC support, and alpine for first class container runtime.
 
 ### Usage
 
