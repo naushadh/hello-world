@@ -28,22 +28,41 @@ Haskell apps require very little from the host OS. So why not cut the chase and 
 
 Learn more about [Alpine](https://alpinelinux.org/about/).
 
+### Builder
+
+This is the container we're going to use to compile our code with.
+
+We shouldn't have to use Alpine linux for development just to target Alpine for our app's runtime.
+
+This may feel like a hassle when you already have say `stack`/`cabal` already pre-configured, but it's worth it. The cost to set up a "dev" or "build" env from scratch dramatically goes down in the Docker way as you'd only require `Docker` and `stack`. In cases where your app requires say a C lib, having this setup saves trouble from having to communicate OS specific env setup instructions.
+
+Haskell applications are best compiled/built on the same architecture/OS as the deployment target. Cross-compilation is still a work in progress for GHC. So let's compare some base images
+
+REPOSITORY         |   TAG           |     IMAGE ID       |    CREATED       |     SIZE
+-------------------|-----------------|--------------------|------------------|-----------
+bitnami/minideb    |   latest        |     774c45746016   |    25 hours ago  |     53.7MB
+fpco/stack-build   |   latest        |     143c6892a663   |    12 days ago   |     7.26GB
+debian             |   latest        |     1b3ec9d977fb   |    2 weeks ago   |     100MB
+alpine             |   latest        |     3fd9065eaf02   |    7 weeks ago   |     4.15MB
+
+Although Alpine would make the most sense with 1:1 build and target env. GHC 8.2+ support isn't available yet. But apparently there is some compatibility for debian built binaries to be run on alpine. So we can exploit the best of both worlds: debian for first class GHC support, and alpine for first class container runtime.
+
 ### Usage
 
-Haskell applications are best compiled/built on the same architecture/OS as the deployment target. May feel like a hassle when you already have say `stack`/`cabal` already pre-configured, but it's worth it. The cost to set up a "dev" or "build" env from scratch dramatically goes down in the Docker way as you'd only require `Docker` and `stack`. In cases where your app requires say a C lib, having this setup saves trouble from having to communicate OS specific env setup instructions.
-
-- Build the builder
+- Build the builder: `$builder` here is either `alpine` or `debian`
+  - Pick `debian` if GHC-8.2+/lts-9.21+ support is required
+  - Pick `alpine` otherwise
   ```bash
-  $ pushd builder
-  $ docker build --tag builder:latest .
+  $ pushd builder/$builder
+  $ docker build --tag builder:ghc-$ghcVer .
   $ popd
-  an image called `builder:latest` should be ready for use with `stack`
+  an image called `builder:ghc-$ghcVer` should be ready for use with `stack`
   ```
 
 - Build app: `$app` here is either `hello-world` or `hello-postgresql`
   ```bash
   $ stack build $app --pedantic
-  should build app(s) from within an ephemeral container based on the `builder:latest` image
+  should build app(s) from within an ephemeral container based on the `builder:ghc-$ghcVer` image
   ```
 
 - Install app
