@@ -2,9 +2,10 @@ FROM alpine:latest
 
 # Install dynamically linked deps
 
-RUN apk upgrade --update-cache --available
-RUN apk add gmp
-RUN apk add libffi
+RUN apk --no-cache add \
+  ca-certificates \
+  gmp \
+  libffi
 
 # move binary in
 

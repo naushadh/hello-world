@@ -2,12 +2,11 @@ FROM alpine:latest
 
 # Install dynamically linked deps
 
-RUN apk upgrade --update-cache --available
-
-## Core deps
-RUN apk add gmp libffi
-## App deps
-RUN apk add libpq
+RUN apk --no-cache add \
+  ca-certificates \
+  gmp \
+  libffi \
+  libpq
 
 # move binary in
 

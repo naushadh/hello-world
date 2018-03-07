@@ -5,5 +5,5 @@ packages:
 - ./hello-postgresql
 
 docker:
-  enabled: true
+  enable: true
   image: "builder:latest"

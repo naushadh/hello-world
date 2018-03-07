@@ -89,8 +89,17 @@ Haskell applications are best compiled/built on the same architecture/OS as the 
   ```bash
   $ docker images
   REPOSITORY             TAG                 IMAGE ID            CREATED              SIZE
-  hello-postgresql-exe   latest              ff3f59f1c293        About a minute ago   22.7MB
-  hello-world-exe        latest              c979ce51a458        4 minutes ago        8.13MB
+  hello-postgresql-exe   latest              12891a91abe0        About a minute ago   20.6MB
+  hello-world-exe        latest              88a10a1e8a02        4 minutes ago        6.05MB
+  ```
+
+- Marvel at how (relatively) compact even our builder is
+  ```bash
+  $ docker images
+  REPOSITORY              TAG                 IMAGE ID            CREATED             SIZE
+  builder                 latest              cd6b16dd1f50        4 minutes ago       1.04GB
+  haskell                 latest              4bbdbe2913ed        2 weeks ago         1.05GB
+  fpco/stack-build        latest              143c6892a663        2 weeks ago         7.26GB
   ```
 
 ### Caveats
