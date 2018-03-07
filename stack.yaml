@@ -7,3 +7,14 @@ packages:
 docker:
   enable: true
   image: "builder:latest"
+
+image:
+  containers:
+    - base: alpine:latest
+      name: hello-world-exe
+      executables:
+        - hello-world-exe
+    - base: alpine:latest
+      name: hello-postgresql-exe
+      executables:
+        - hello-postgresql-exe
