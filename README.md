@@ -32,43 +32,59 @@ Learn more about [Alpine](https://alpinelinux.org/about/).
 
 Haskell applications are best compiled/built on the same architecture/OS as the deployment target. May feel like a hassle when you already have say `stack`/`cabal` already pre-configured, but it's worth it. The cost to set up a "dev" or "build" env from scratch dramatically goes down in the Docker way as you'd only require `Docker` and `stack`. In cases where your app requires say a C lib, having this setup saves trouble from having to communicate OS specific env setup instructions.
 
-- Build the builder
+#### One time images setup
+
+We setup some images for use with stack later on. Once there are built, we won't have to rebuild them unless their Dockerfile or base image has to be updated.
+
+- Build the builder: an image that will build our apps
   ```bash
-  $ pushd builder
+  $ pushd docker/builder
   $ docker build --tag builder:latest .
   $ popd
-  an image called `builder:latest` should be ready for use with `stack`
+  an image called `builder:latest` should be created
   ```
 
-- Build app: `$app` here is either `hello-world` or `hello-postgresql`
+- Build the runner: an image that run pure haskell apps
   ```bash
-  $ stack build $app --pedantic
+  $ pushd docker/runner
+  $ docker build --tag runner:latest .
+  $ popd
+  an image called `runner:latest` should be created
+  ```
+
+- Build the runner-libpq: an image that can run a haskell app that depends on libpq
+  ```bash
+  $ pushd docker/runner-libpq
+  $ docker build --tag runner-libpq:latest .
+  $ popd
+  an image called `runner-libpq:latest` should be created
+  ```
+
+#### stack time
+
+The remainder of the flow is entirely `stack` based. For the most part you don't have to think about docker.
+
+- Build apps
+  ```bash
+  $ stack build --pedantic
   should build app(s) from within an ephemeral container based on the `builder:latest` image
   ```
 
-- Install app
+- Build app images
   ```bash
-  $ stack install $app --local-bin-path $app/bin/
-  should move binaries into `$app/bin`
-  ```
-
-- Build app image
-  ```bash
-  $ pushd $app/bin
-  $ docker build --tag $app-exe:latest .
-  $ popd
-  build an image with binary produced by stack
+  $ stack image container
+  should build images for every app
   ```
 
 - Run `hello-world` within container
   ```bash
-  $ docker run $app-exe:latest
+  $ docker run hello-world-exe:latest
   someFunc
   ```
 
 - Run `hello-postgresql` within container
   ```bash
-  $ pushd hello-postgresql/bin
+  $ pushd hello-postgresql
   $ docker-compose up --build
   Successfully built e6e8f4785d37
   Successfully tagged bin_exe:latest
@@ -89,8 +105,8 @@ Haskell applications are best compiled/built on the same architecture/OS as the 
   ```bash
   $ docker images
   REPOSITORY             TAG                 IMAGE ID            CREATED              SIZE
-  hello-postgresql-exe   latest              12891a91abe0        About a minute ago   20.6MB
-  hello-world-exe        latest              88a10a1e8a02        4 minutes ago        6.05MB
+  hello-postgresql-exe    latest              520c289ff2d5        15 seconds ago      20.6MB
+  hello-world-exe         latest              46d08020b40c        15 seconds ago      6.05MB
   ```
 
 - Marvel at how (relatively) compact even our builder is

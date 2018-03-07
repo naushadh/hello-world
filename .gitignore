@@ -1,7 +1,4 @@
 .stack-work/
 *~
 .DS_Store
-hello-world/bin/hello-world-exe
-hello-world/hello-world.cabal
-hello-postgresql/bin/hello-postgresql-exe
-hello-postgresql/hello-postgresql.cabal
+*.cabal

@@ -10,11 +10,11 @@ docker:
 
 image:
   containers:
-    - base: alpine:latest
+    - base: runner:latest
       name: hello-world-exe
       executables:
         - hello-world-exe
-    - base: alpine:latest
+    - base: runner-libpq:latest
       name: hello-postgresql-exe
       executables:
         - hello-postgresql-exe
