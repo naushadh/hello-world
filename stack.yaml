@@ -1,9 +1,0 @@
-resolver: lts-9.21
-
-packages:
-- ./hello-world
-- ./hello-postgresql
-
-docker:
-  enable: true
-  image: "builder:latest"

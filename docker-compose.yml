@@ -1,0 +1,24 @@
+version: '3'
+services:
+  hello-world:
+    build: hello-world
+    image: hello-world
+
+  postgres:
+    image: postgres:alpine
+    restart: always
+    environment:
+      POSTGRES_DB: $APP_DB_NAME
+      POSTGRES_USER: $APP_DB_USER
+      POSTGRES_PASSWORD: $APP_DB_PASS
+
+  hello-postgresql:
+    build: hello-postgresql
+    image: hello-postgresql
+    depends_on:
+      - postgres
+    environment:
+      APP_DB_HOST: postgres
+      APP_DB_NAME: $APP_DB_NAME
+      APP_DB_USER: $APP_DB_USER
+      APP_DB_PASS: $APP_DB_PASS
