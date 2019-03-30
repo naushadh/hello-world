@@ -1,9 +1,9 @@
-resolver: lts-9.21
+resolver: lts-12.14
 
 packages:
 - ./hello-world
 - ./hello-postgresql
 
-docker:
-  enable: true
-  image: "builder:latest"
+# the following flags are meant for use with Dockerfile
+compiler: ghc-8.4.3 # this MUST match the resolver's GHC; ensures GHC isn't redownloaded.
+allow-different-user: true

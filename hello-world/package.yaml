@@ -4,10 +4,7 @@ github:              "naushadh/hello-world"
 license:             BSD3
 author:              "Naushadh"
 maintainer:          "naushadh@protonmail.com"
-copyright:           "2018 Naushadh"
-
-extra-source-files:
-- ChangeLog.md
+copyright:           "2019 Naushadh"
 
 # Metadata used when publishing your package
 # synopsis:            Short description of your package
