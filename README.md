@@ -30,83 +30,42 @@ Learn more about [Alpine](https://alpinelinux.org/about/).
 
 ### Usage
 
-Haskell applications are best compiled/built on the same architecture/OS as the deployment target. May feel like a hassle when you already have say `stack`/`cabal` already pre-configured, but it's worth it. The cost to set up a "dev" or "build" env from scratch dramatically goes down in the Docker way as you'd only require `Docker` and `stack`. In cases where your app requires say a C lib, having this setup saves trouble from having to communicate OS specific env setup instructions.
+Haskell applications are best compiled/built on the same architecture/OS as the deployment target. May feel like a hassle when you already have say `stack`/`cabal` already pre-configured, but it's worth it. The cost to set up a "dev" or "build" env from scratch dramatically goes down in the Docker way as you'd only require `Docker`. In cases where your app requires system/foreign dependencies (ex: a C lib), the Docker way ensures you work with the exact same runtime from development to production.
 
-- Build the builder
-  ```bash
-  $ pushd builder
-  $ docker build --tag builder:latest .
-  $ popd
-  an image called `builder:latest` should be ready for use with `stack`
-  ```
+- Build and run `hello-world` (a pure haskell CLI app)
 
-- Build app: `$app` here is either `hello-world` or `hello-postgresql`
   ```bash
-  $ stack build $app --pedantic
-  should build app(s) from within an ephemeral container based on the `builder:latest` image
-  ```
-
-- Install app
-  ```bash
-  $ stack install $app --local-bin-path $app/bin/
-  should move binaries into `$app/bin`
-  ```
-
-- Build app image
-  ```bash
-  $ pushd $app/bin
-  $ docker build --tag $app-exe:latest .
-  $ popd
-  build an image with binary produced by stack
-  ```
-
-- Run `hello-world` within container
-  ```bash
-  $ docker run $app-exe:latest
+  $ docker-compose build hello-world # builds, tests, packages executable(s), and produces a tagged Docker image "hello-world:latest"
+  $ docker-compose run hello-world
   someFunc
   ```
 
-- Run `hello-postgresql` within container
+- Build and run `hello-postgresql` (a haskell CLI app with C lib dependency)
+
   ```bash
-  $ pushd hello-postgresql/bin
+  $ docker-compose build hello-postgresql # builds, tests, packages executable(s), and produces a tagged Docker image "hello-postgresql:latest"
   $ docker-compose up --build
-  Successfully built e6e8f4785d37
-  Successfully tagged bin_exe:latest
-  Starting bin_db_1 ... done
-  Starting bin_exe_1 ... done
-  Attaching to bin_db_1, bin_exe_1
-  db_1   | 2018-02-23 00:31:04.742 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
-  db_1   | 2018-02-23 00:31:04.742 UTC [1] LOG:  listening on IPv6 address "::", port 5432
-  db_1   | 2018-02-23 00:31:04.746 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
-  db_1   | 2018-02-23 00:31:04.761 UTC [17] LOG:  database system was shut down at 2018-02-23 00:27:02 UTC
-  db_1   | 2018-02-23 00:31:04.764 UTC [1] LOG:  database system is ready to accept connections
-  exe_1  | dbFour
-  exe_1  | 4
-  bin_exe_1 exited with code 0
+  Creating hello-world_hello-world_1 ... done
+  Creating hello-world_postgres_1    ... done
+  Creating hello-world_hello-postgresql_1 ... done
+  hello-postgresql_1  | dbFour
+  hello-postgresql_1  | 4
+  hello-world_hello-postgresql_1 exited with code 0
   ```
 
 - Marvel at how compact app images are
-  ```bash
-  $ docker images
-  REPOSITORY             TAG                 IMAGE ID            CREATED              SIZE
-  hello-postgresql-exe   latest              12891a91abe0        About a minute ago   20.6MB
-  hello-world-exe        latest              88a10a1e8a02        4 minutes ago        6.05MB
-  ```
 
-- Marvel at how (relatively) compact even our builder is
   ```bash
   $ docker images
-  REPOSITORY              TAG                 IMAGE ID            CREATED             SIZE
-  builder                 latest              cd6b16dd1f50        4 minutes ago       1.04GB
-  haskell                 latest              4bbdbe2913ed        2 weeks ago         1.05GB
-  fpco/stack-build        latest              143c6892a663        2 weeks ago         7.26GB
+  REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+  hello-postgresql    latest              04198bd1418d        8 minutes ago       21.6MB
+  hello-world         latest              6f085d084f4a        About an hour ago   7.36MB
   ```
 
 ### Caveats
 
 - GHC version
-  - `stack` in docker mode will use system GHC by default
-  - the version of `ghc` shipped with a stackage resolver MUST match the version of `ghc` installed (via `APK` or stack bin-dist injection).
+  - the version of `ghc` shipped with a stackage resolver MUST match the version of `ghc` available on Alpine.
   - otherwise `stack` will try to build `ghc` from source. This usually doesn't go so well.
   - the official alpine ghc version can be found [here](https://pkgs.alpinelinux.org/packages?name=ghc&branch=edge).
 
