@@ -73,3 +73,11 @@ Haskell applications are best compiled/built on the same architecture/OS as the 
 
 - [jkachmar's GIST](https://gist.github.com/jkachmar/4828bfe0f585bec93878ea893c3373ee)
 - [Mark Bucciarelli's blog post](http://markbucciarelli.com/posts/2017-04-05_haskell_on_alpine_linux.html)
+
+## Example 2: .env
+
+`.env` file can be used to store configurations that can then be consumed as ENV vars. Despite being so simple, it addresses config management in an elegant way when paired with Docker.
+
+Docker-compose supports `.env` out of the box. Your (dockerized) application can also access the same `.env` vars by whitelisting/passing the env vars in `docker-compose`. In addition, the same vars can be used to bootstrap other services like database credentials. This simply makes the env file the source of truth for configs.
+
+Alternatively, if docker-compose is not desired/applicable, [dotenv](https://hackage.haskell.org/package/dotenv) can be used to consume .env as ENV vars directly from your application.
